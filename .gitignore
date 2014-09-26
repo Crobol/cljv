@@ -9,3 +9,10 @@ pom.xml.asc
 .lein-repl-history
 .lein-plugins/
 .lein-failures
+.lein-env
+*.jks
+*.pem
+*.class
+/.nrepl-port
+notes/
+.DS_Store
