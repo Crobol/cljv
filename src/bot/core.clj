@@ -20,8 +20,22 @@
   ([line url-regexes]
     (map get-title (get-urls line url-regexes))))
 
+(defn contains-url?
+  [line] (not (empty? (get-urls line))))
+
 (defn is-valid-string-result [result]
   (and (string? result) (not (clojure.string/blank? result))))
 
-(defn is-valid-coll-result [result]
-  (coll? result))
+(defn is-valid-seq-result [result]
+  (seq? result))
+
+(defn truncate-string
+  ([string length]
+   (truncate-string string length ""))
+  ([string length continuation]
+   (if (> (count string) length)
+     (str (subs string 0 length) continuation)
+     string)))
+
+(defn truncate-privmsg [message]
+  (truncate-string message 480))

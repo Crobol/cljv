@@ -8,4 +8,5 @@
         raw-json (:body (http/get url))
         json (json/read-str raw-json)
         definition (get (first (get json "list")) "definition")]
-    (clojure.string/replace definition #"\s+" " ")))
+    (when (some? definition)
+      (clojure.string/replace definition #"\s+" " "))))

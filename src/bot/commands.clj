@@ -8,11 +8,16 @@
             [clojure.zip :as zip]
             [clojure.xml :as xml]
             [clojure.data.zip.xml :refer [text xml-> xml1-> attr attr=]]
-            [clj-time.local :as local])
+            [clj-time.local :as local]
+            [clojure.tools.logging :as log])
   (:use [hickory.core :only (parse as-hickory)]
         [clj-http.util :only (url-encode)]
-        [bot.core :only (url-titles)]
+        [bot.core :only (contains-url? url-titles)]
         [clj-mmap]
+        [bot.query-provider :only [Query-provider run-query]]
+        [bot.providers.wikipedia]
+        [bot.providers.urban-dictionary]
+        [bot.providers.wolfram-alpha]
         [iota]))
 
 (defn- flag? [opts flag]
@@ -35,5 +40,5 @@
 (load "commands/title")
 (load "commands/movie")
 (load "commands/quote")
-(load "commands/seen")
-
+;(load "commands/seen")
+(load "commands/unified_search")

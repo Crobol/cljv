@@ -15,18 +15,19 @@
    #"https?://(?:www\.)?imdb.com/title/\S*"])
 
 (defn privmsg [irc message]
-  (log/info (str (:nick message) "> " (:text message)))
+  ;(log/info (str (:nick message) "> " (:text message)))
   (if (.startsWith (:text message) ".")
     (let [tokens (clojure.string/split (:text message) #"\s")
           command-name (subs (first tokens) 1)
           params (clojure.string/join " " (drop 1 tokens))
           found-commands (auto-complete-command command-name)
           result (cond
+                  (.startsWith (:text message) ". ") (try (bot.commands/unified-search params message) (catch Exception e (log/error e)))
                   (== (count found-commands) 1) (try ((first found-commands) params message) (catch Exception e (log/error e)))
                   (> (count found-commands) 1) "Multiple matches")]
       (cond
-       (is-valid-coll-result result) (dorun (map #(ircc/reply irc message (str %)) result))
-       (is-valid-string-result result) (ircc/reply irc message result))
+       (is-valid-seq-result result) (dorun (map #(ircc/reply irc message (bot.core/truncate-privmsg %)) result))
+       (is-valid-string-result result) (ircc/reply irc message (bot.core/truncate-privmsg result)))
       )
     (try
       (when-let [titles (url-titles (:text message) url-regexes)]

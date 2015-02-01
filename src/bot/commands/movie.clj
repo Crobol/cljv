@@ -4,7 +4,7 @@
 
 (defn movie
   "Query for information about a specific movie by title"
-  {:aliases ["imdb" "tv"] :options movie-options}
+  {:aliases ["imdb" "tv" "series"] :options movie-options}
   [query message]
   (when (not (clojure.string/blank? query))
     (let [opts (cli/parse-opts (clojure.string/split query #"\s") movie-options)
