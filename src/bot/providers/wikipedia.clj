@@ -13,13 +13,13 @@
   (provider-name [this] "Wikipedia")
   (options [this] wikipedia-options)
   (run-query [this query]
-          (when (not (clojure.string/blank? query))
-            (let [opts (cli/parse-opts (clojure.string/split query #"\s") wikipedia-options)
-                  url (format url-template (get-in opts [:options :language]) (clojure.string/join " " (:arguments opts)))
-                  raw-json (:body (http/get url))
-                  json (json/read-str raw-json)
-                  first-page (first (vals (get-in json ["query" "pages"])))]
-              (when (and (some? first-page) (some? (get first-page "extract")))
-                (clojure.string/replace (get first-page "extract") #"\s+" " "))
-              ))
-          ))
+    (when (not (clojure.string/blank? query))
+      (let [opts (cli/parse-opts (clojure.string/split query #"\s") wikipedia-options)
+            url (format url-template (get-in opts [:options :language]) (clojure.string/join " " (:arguments opts)))
+            raw-json (:body (http/get url))
+            json (json/read-str raw-json)
+            first-page (first (vals (get-in json ["query" "pages"])))]
+        (when (and (some? first-page) (some? (get first-page "extract")))
+          (clojure.string/replace (get first-page "extract") #"\s+" " "))
+        ))
+    ))

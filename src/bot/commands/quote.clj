@@ -4,7 +4,7 @@
 
 (def ^:private quote-options [["-a" "--add"] ["-d" "--delete INDEX"] ["-l" "--latest"]])
 
-(def db-file (:quote-db env/env))
+(def ^:private db-file (:quote-db env/env))
 
 (defn- set-state [index state]
   (with-open [mapped-file (clj-mmap/get-mmap db-file :read-write)]

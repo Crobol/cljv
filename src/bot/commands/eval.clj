@@ -1,3 +1,4 @@
 (defn evaluate [body message]
-  (when (:debug env/env)
-    (eval (read-string body))))
+  (if (:debug env/env)
+    (eval (read-string body))
+    (str "Evaluate is only available in debug mode.")))

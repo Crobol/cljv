@@ -8,6 +8,7 @@
 
 (def url-regexes
   [#"https?://(?:www\.)?youtube\.com/\S*"
+   #"https?://youtu\.be/\S*"
    #"https?://open\.spotify\.com/\S*"
    #"https?://(?:www\.)?vimeo.com/\S*"
    #"https?://news\.ycombinator.com/\S*"
@@ -15,7 +16,6 @@
    #"https?://(?:www\.)?imdb.com/title/\S*"])
 
 (defn privmsg [irc message]
-  ;(log/info (str (:nick message) "> " (:text message)))
   (if (.startsWith (:text message) ".")
     (let [tokens (clojure.string/split (:text message) #"\s")
           command-name (subs (first tokens) 1)
@@ -34,12 +34,16 @@
         (dorun (map #(ircc/reply irc message (str "Title: " %)) titles)))
       (catch Exception e (log/error e)))))
 
+;(defn on-exception [irc e]
+;  (System/exit -1))
+
 (defn start-bot [connections]
   (log/info "Connecting to servers...")
   (dorun (map #(let [irc (ircc/connect (:host %) (:port %) (:nick %)
                                        :ssl? (:ssl? %)
                                        :callbacks {:privmsg privmsg})]
+                                       ;:callbacks {:privmsg privmsg :on-exception on-exception})]
                  (log/info "Connected to" (:host %))
-                 (ircc/join irc (first (:channels %)))
+                 (doseq [channel (:channels %)] (ircc/join irc channel))
                  (log/info "Channels joined:" (:channels %)))
               connections)))

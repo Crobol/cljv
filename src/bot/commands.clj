@@ -8,7 +8,6 @@
             [clojure.zip :as zip]
             [clojure.xml :as xml]
             [clojure.data.zip.xml :refer [text xml-> xml1-> attr attr=]]
-            [clj-time.local :as local]
             [clojure.tools.logging :as log])
   (:use [hickory.core :only (parse as-hickory)]
         [clj-http.util :only (url-encode)]
@@ -18,7 +17,8 @@
         [bot.providers.wikipedia]
         [bot.providers.urban-dictionary]
         [bot.providers.wolfram-alpha]
-        [iota]))
+        [bot.providers.finance]
+        [bot.providers.llt]))
 
 (defn- flag? [opts flag]
   (and (contains? opts :options) (get-in opts [:options flag])))
@@ -42,3 +42,6 @@
 (load "commands/quote")
 ;(load "commands/seen")
 (load "commands/unified_search")
+(load "commands/llt")
+(load "commands/finance")
+
