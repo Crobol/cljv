@@ -13,7 +13,8 @@
    #"https?://(?:www\.)?vimeo.com/\S*"
    #"https?://news\.ycombinator.com/\S*"
    #"https?://(?:www\.)?aftonbladet.se/\S*"
-   #"https?://(?:www\.)?imdb.com/title/\S*"])
+   #"https?://(?:www\.)?imdb.com/title/\S*"
+   #"https?://(?:www\.)?twitter.com/\w+/status/\S*"])
 
 (defn privmsg [irc message]
   (if (.startsWith (:text message) ".")
@@ -34,16 +35,20 @@
         (dorun (map #(ircc/reply irc message (str "Title: " %)) titles)))
       (catch Exception e (log/error e)))))
 
-;(defn on-exception [irc e]
-;  (System/exit -1))
-
 (defn start-bot [connections]
+  (log/info "Starting bot...")
   (log/info "Connecting to servers...")
-  (dorun (map #(let [irc (ircc/connect (:host %) (:port %) (:nick %)
-                                       :ssl? (:ssl? %)
-                                       :callbacks {:privmsg privmsg})]
-                                       ;:callbacks {:privmsg privmsg :on-exception on-exception})]
-                 (log/info "Connected to" (:host %))
-                 (doseq [channel (:channels %)] (ircc/join irc channel))
-                 (log/info "Channels joined:" (:channels %)))
-              connections)))
+  (try
+    (dorun (map #(let [irc (ircc/connect (:host %) (:port %) (:nick %)
+                                         :ssl? (:ssl? %)
+                                         :callbacks {:privmsg privmsg})]
+                                         ;:callbacks {:privmsg privmsg :on-exception on-exception})]
+                   (log/info "Connected to" (:host %))
+                   (doseq [channel (:channels %)] (ircc/join irc channel))
+                   (log/info "Channels joined:" (:channels %)))
+                connections))
+    (catch Exception e 
+      (do 
+        (log/error e) 
+        (System/exit -1))))
+  (log/info "Exiting bot..."))
