@@ -27,8 +27,8 @@
                   (== (count found-commands) 1) (try ((first found-commands) params message) (catch Exception e (log/error e)))
                   (> (count found-commands) 1) "Multiple matches")]
       (cond
-       (is-valid-seq-result result) (dorun (map #(ircc/reply irc message (bot.core/truncate-privmsg %)) result))
-       (is-valid-string-result result) (ircc/reply irc message (bot.core/truncate-privmsg result)))
+       (is-valid-seq-result result) (dorun (map #(ircc/reply irc message (bot.core/truncate-string % 450 " [...]")) result))
+       (is-valid-string-result result) (ircc/reply irc message (bot.core/truncate-string result 450 " [...]")))
       )
     (try
       (when-let [titles (url-titles (:text message) url-regexes)]

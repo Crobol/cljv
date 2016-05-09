@@ -36,6 +36,3 @@
    (if (> (count string) length)
      (str (subs string 0 length) continuation)
      string)))
-
-(defn truncate-privmsg [message]
-  (truncate-string message 480))
